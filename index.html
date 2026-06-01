@@ -1,50 +1,381 @@
-<!DOCTYPE html><html lang="uk"><head>    <meta charset="UTF-8">    <title>Презентація: Тетріс на Python</title>    <style>        * { box-sizing: border-box; margin: 0; padding: 0; }                body {            font-family: 'Segoe UI', system-ui, Arial, sans-serif;            background-color: #08090f;            color: #e4e7eb;            line-height: 1.6;            overflow: hidden;        }
-        .slider-wrapper {            width: 100vw;            height: 100vh;            position: relative;        }
-        .slide {            position: absolute;            top: 0;            left: 0;            width: 100%;            height: 100%;            display: flex;            flex-direction: column;            justify-content: center;            align-items: center;            padding: 4rem;            text-align: center;            opacity: 0;            visibility: hidden;            transition: opacity 0.4s ease, visibility 0.4s ease;            z-index: 1;        }
-        .slide.active {            opacity: 1;            visibility: visible;            z-index: 5;        }
-        .container { max-width: 1100px; width: 100%; margin: 0 auto; }                .badge {            background: linear-gradient(135deg, #7000ff, #00ffcc);            color: #000;            padding: 0.6rem 1.8rem;            border-radius: 50px;            font-size: 0.95rem;            text-transform: uppercase;            letter-spacing: 2px;            display: inline-block;            margin-bottom: 2rem;            font-weight: 800;        }
-        h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 2rem; color: #ffffff; line-height: 1.2; }        h1 span, h2 span, h3 span { color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.3); }                .subtitle { font-size: 1.5rem; color: #8a94a6; margin-bottom: 4rem; }                .author-box {            background-color: #11131f; border: 1px solid #1e2235; border-left: 5px solid #00ffcc;            padding: 2rem; border-radius: 16px; text-align: left; display: inline-block; min-width: 360px;            box-shadow: 0 10px 30px rgba(0,0,0,0.5);        }        .author-box p { color: #8a94a6; margin-bottom: 0.3rem; }        .author-name { font-size: 1.7rem; font-weight: 700; color: #fff; }                h2 { font-size: 2.8rem; color: #fff; margin-bottom: 2.5rem; }                .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; width: 100%; text-align: left; }        .card { background-color: #11131f; padding: 2.5rem; border-radius: 16px; border: 1px solid #1e2235; transition: transform 0.3s; }        .card:hover { transform: translateY(-5px); border-color: #7000ff; }        .card h3 { color: #00ffcc; margin-bottom: 1.2rem; font-size: 1.4rem; border-bottom: 1px dashed #1e2235; padding-bottom: 0.5rem; }        .card p { color: #b0b9c8; font-size: 1.1rem; }                pre {            background-color: #030407; padding: 2rem; border-radius: 12px; border: 1px solid #141724;            font-family: 'Consolas', 'Courier New', monospace; font-size: 1.1rem; color: #a9b2c3; text-align: left;            box-shadow: inset 0 0 20px rgba(0,0,0,0.8); width: 100%; max-width: 800px; margin: 0 auto;        }        .keyword { color: #ff79c6; font-weight: bold; }        .def { color: #50fa7b; }        .comment { color: #6272a4; font-style: italic; }
-        .nav-controls {            position: fixed; bottom: 2rem; right: 2rem; display: flex; gap: 1rem; z-index: 999;        }        .nav-btn {            background-color: #11131f; color: #fff; border: 1px solid #252941; width: 60px; height: 60px;            border-radius: 50%; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center;            justify-content: center; transition: all 0.2s; user-select: none;        }        .nav-btn:hover { background-color: #7000ff; border-color: #7000ff; transform: scale(1.05); }        .slide-counter {            position: fixed; bottom: 2.5rem; left: 2rem; font-size: 1.1rem; color: #626f8a; font-weight: bold; z-index: 999;        }
-        #tetris-stage {            display: flex; gap: 3rem; align-items: center; justify-content: center; margin-top: 1rem;        }        #tetris-canvas {            background-color: #050609; border: 4px solid #252941; border-radius: 12px; box-shadow: 0 0 30px rgba(0,255,204,0.15);        }        .game-panel {            background-color: #11131f; padding: 2rem; border-radius: 16px; border: 1px solid #1e2235; text-align: left; min-width: 260px;        }        .start-btn {            background: linear-gradient(135deg, #7000ff, #5900cc); color: white; border: none; padding: 1rem 1.5rem;            border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; transition: all 0.2s;            box-shadow: 0 5px 15px rgba(112,0,255,0.3); margin-top: 1rem;        }        .start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(112,0,255,0.5); }    </style></head><body>
-    <div class="slider-wrapper">        <section class="slide active">            <div class="container">                <span class="badge">Творчий проєкт з інформатики</span>                <h1>Розробка інтерактивного ігрового додатка мовою <span>Python</span></h1>                <p class="subtitle">Практична реалізація класичної гри «Тетріс» за допомогою графічного інтерфейсу Tkinter</p>                <div class="author-box">                    <p style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Роботу виконала:</p>                    <p style="color: #fff; font-size: 1.1rem; margin-top: 0.2rem;">Учениця 8-А класу</p>                    <div class="author-name">Гадомська Еріка</div>                </div>            </div>        </section>
-        <section class="slide">            <div class="container">                <h2>Мета та концепція проєкту</h2>                <div class="grid">                    <div class="card">                        <h3>◆ Чому саме Python?</h3>                        <p>Python поєднує зрозумілий синтаксис із потужними принципами ООП. Це робить його ідеальним інструментом для швидкого створення та тестування ігрових алгоритмів.</p>                    </div>                    <div class="card">                        <h3>◆ Головна мета</h3>                        <p>Дослідити принципи розробки 2D-ігор, запрограмувати поведінку випадкових фігур (тетраміно) та реалізувати систему відстеження ігрових подій у реальному часі.</p>                    </div>                    <div class="card">                        <h3>◆ Стек технологій</h3>                        <p>Інтерпретатор Python 3 та стандартне графічне середовище <strong>Tkinter</strong> (Canvas). Програма автономна і не потребує встановлення сторонніх бібліотек.</p>                    </div>                </div>            </div>        </section>
-        <section class="slide">            <div class="container">                <h2>Матрична модель поля</h2>                <div class="grid" style="grid-template-columns: 1.1fr 0.9fr;">                    <div class="card" style="background: transparent; border: none; padding: 0;">                        <p style="font-size: 1.3rem; margin-bottom: 1.5rem; text-align: left;">На першому практичному етапі було спроєктовано «склянку» гри. Вся логіка руху базується на двовимірній матриці розміром <strong>20 рядків на 10 стовпчиків</strong>.</p>                        <p style="font-size: 1.3rem; text-align: left;">Значення <span>0</span> означає, що клітинка абсолютно порожня. Якщо фігура падає на дно, клітинка записує в себе її колір.</p>                    </div>                    <div class="card">                        <h3>Ключові ігрові алгоритми:</h3>                        <p style="margin-bottom: 0.6rem; font-size: 1.05rem;"> <strong>Collision Detection:</strong> Перевірка зіткнень зі стінами та фігурами.</p>                        <p style="margin-bottom: 0.6rem; font-size: 1.05rem;"> <strong>Line Clearing:</strong> Автоматичне видалення заповнених ліній.</p>                        <p style="font-size: 1.05rem;"> <strong>Ігровий цикл:</strong> Автоматичне падіння фігур кожні 500 мс.</p>                    </div>                </div>            </div>        </section>
-        <section class="slide">            <div class="container">                <h2>Архітектура головного класу</h2>                <pre><span class="keyword">class</span> <span class="def">Tetris</span>:    <span class="keyword">def</span> <span class="def">__init__</span>(self, root):        self.root = root        <span class="comment"># Створення графічного вікна програми через Tkinter</span>        self.canvas = tk.Canvas(root, width=300, height=600, bg="#050609")        self.canvas.pack()                <span class="comment"># Створення ігрової сітки (матриці) 20х10</span>        self.grid = [ * 10 for _ in range(20)]        self.score = 0                self.new_piece()  <span class="comment"># Поява першого тетраміно</span>        self.move_down()  <span class="comment"># Запуск падіння фігур за таймером</span></pre>            </div>        </section>
-        <section class="slide">            <div class="container">                <h2> Інтерактивна демонстрація проєкту</h2>                                <div id="tetris-stage">                    <canvas id="tetris-canvas" width="300" height="600"></canvas>                                        <div class="game-panel">                        <h3 style="color: #fff; margin-bottom: 0.5rem; font-size: 1.2rem;">Рахунок:</h3>                        <div id="game-score" style="font-size: 2.5rem; font-weight: bold; color: #00ffcc; margin-bottom: 1.5rem;">Бали: 0</div>                                                <h4 style="color: #8a94a6; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 0.8rem; letter-spacing: 1px;">Керування:</h4>                        <p style="font-size: 1rem; margin-bottom: 0.4rem;"> — Поворот фігури</p>                        <p style="font-size: 1rem; margin-bottom: 0.4rem;"> — Ліворуч / Праворуч</p>                        <p style="font-size: 1rem; margin-bottom: 1.5rem;"> — Затиснути для прискорення</p>                        <button id="start-btn" class="start-btn">Запустити гру</button>                    </div>                </div>            </div>        </section>    </div>
-    <div class="slide-counter"><span id="current-slide-num">1</span> / 5</div>    <div class="nav-controls">        <button class="nav-btn" id="prev-btn">←</button>        <button class="nav-btn" id="next-btn">→</button>    </div>
-    <script>        const slides = document.querySelectorAll('.slide');        const prevBtn = document.getElementById('prev-btn');        const nextBtn = document.getElementById('next-btn');        const currentSlideNum = document.getElementById('current-slide-num');        let activeSlideIdx = 0;
-        function updateSlides() {            slides.forEach((slide, idx) => {                if(idx === activeSlideIdx) slide.classList.add('active');                else slide.classList.remove('active');            });            currentSlideNum.textContent = activeSlideIdx + 1;        }
-        nextBtn.addEventListener('click', () => {            if(activeSlideIdx < slides.length - 1) { activeSlideIdx++; updateSlides(); }        });        prevBtn.addEventListener('click', () => {            if(activeSlideIdx > 0) { activeSlideIdx--; updateSlides(); }        });
-        document.addEventListener('keydown', (e) => {            if(activeSlideIdx === 4 && !gameOver) return;
-            if(e.keyCode === 32 || e.keyCode === 39) {                e.preventDefault();                if(activeSlideIdx < slides.length - 1) { activeSlideIdx++; updateSlides(); }            } else if(e.keyCode === 8 || e.keyCode === 37) {                e.preventDefault();                if(activeSlideIdx > 0) { activeSlideIdx--; updateSlides(); }            }        });
-        const canvas = document.getElementById('tetris-canvas');        const ctx = canvas.getContext('2d');        const scoreElement = document.getElementById('game-score');        const startBtn = document.getElementById('start-btn');
-        const WIDTH = 10, HEIGHT = 20, CELL_SIZE = 30;        const NORMAL_DELAY = 500, SOFT_DROP_DELAY = 45;        const VACANT = "#050609";
-        const PIECES = {            "I": { shape: [[0, -1],,,], color: "#00ffcc" },            "O": { shape: [,,,], color: "#ffff00" },            "T": { shape: [[0, -1],,,], color: "#ff00ff" },            "S": { shape: [[0, -1],,,], color: "#00ff00" },            "Z": { shape: [,, [1, -1],], color: "#ff0000" },            "J": { shape: [[0, -1],, [1, -1],], color: "#0000ff" },            "L": { shape: [,, [1, -1],], color: "#ffa500" }        };
-        let grid = [];        let score = 0;        let currentPiece = null;        let currentColor = null;        let gameOver = true;        let isSoftDropping = false;        let fallTimeout = null;
-        function initGrid() {            grid = [];            for(let r=0; r<HEIGHT; r++) {                grid[r] = [];                for(let c=0; c<WIDTH; c++) grid[r][c] = 0;            }        }
-        function drawCell(r, c, color) {            ctx.fillStyle = color;            ctx.fillRect(c*CELL_SIZE, r*CELL_SIZE, CELL_SIZE, CELL_SIZE);            ctx.strokeStyle = "#1a1a1a";            ctx.lineWidth = 1;            ctx.strokeRect(c*CELL_SIZE, r*CELL_SIZE, CELL_SIZE, CELL_SIZE);        }
-        function draw() {            ctx.fillStyle = VACANT;            ctx.fillRect(0, 0, WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE);
-            for(let r=0; r<HEIGHT; r++) {                for(let c=0; c<WIDTH; c++) {                    if(grid[r][c]) drawCell(r, c, grid[r][c]);                }            }
-            if(currentPiece) {                currentPiece.forEach(coord => {                    let r = coord, c = coord;                    if(r >= 0) drawCell(r, c, currentColor);                });            }
-            if(gameOver && currentPiece === null && score === 0) {                // Очікування            } else if(gameOver) {                ctx.fillStyle = "#161925";                ctx.strokeStyle = "#ff0066";                ctx.lineWidth = 2;                ctx.fillRect(0, 220, WIDTH*CELL_SIZE, 160);                ctx.strokeRect(0, 220, WIDTH*CELL_SIZE, 160);
-                ctx.fillStyle = "red";                ctx.font = "bold 28px Segoe UI";                ctx.textAlign = "center";                ctx.fillText("КІНЕЦЬ ГРИ", (WIDTH*CELL_SIZE)/2, 310);            }        }
-        function scheduleFall() {            if(fallTimeout) clearTimeout(fallTimeout);            if(!gameOver && currentPiece) {                let delay = isSoftDropping ? SOFT_DROP_DELAY : NORMAL_DELAY;                fallTimeout = setTimeout(moveDown, delay);            }        }
-        function newPiece() {            if(gameOver) return;            let keys = Object.keys(PIECES);            let shapeName = keys[Math.floor(Math.random() * keys.length)];            let data = PIECES[shapeName];
-            currentPiece = data.shape.map(coord => [coord, coord]);            currentColor = data.color;
-            let startCol = Math.floor(WIDTH / 2);            currentPiece.forEach(p => p += startCol);
-            if(!isValidMove(currentPiece)) {                gameOver = true;                currentPiece = null;                draw();            }        }
-        function isValidMove(piece) {            for(let i=0; i<piece.length; i++) {                let r = piece[i], c = piece[i];                if(c < 0 || c >= WIDTH || r >= HEIGHT) return false;                if(r >= 0 && grid[r][c] !== 0) return false;            }            return true;        }
-        function lockPiece() {            currentPiece.forEach(coord => {                let r = coord, c = coord;                if(r >= 0 && r < HEIGHT) grid[r][c] = currentColor;            });            currentPiece = null;        }
-        function moveDown() {            if(gameOver || !currentPiece) return;            let movedPiece = currentPiece.map(coord => [coord + 1, coord]);
-            if(isValidMove(movedPiece)) {                currentPiece = movedPiece;            } else {                lockPiece();                clearLines();                newPiece();                isSoftDropping = false;            }            draw();            scheduleFall();        }
-        function moveSide(dc) {            if(gameOver || !currentPiece) return;            let moved = currentPiece.map(coord => [coord, coord + dc]);            if(isValidMove(moved)) { currentPiece = moved; draw(); }        }
-        function rotate() {            if(gameOver || !currentPiece || currentColor === "#ffff00") return;
-            let cx = currentPiece;            let cy = currentPiece;            let rotated = [];
-            for(let i=0; i<currentPiece.length; i++) {                let r = currentPiece[i];                let c = currentPiece[i];                let nr = cx + (c - cy);                let nc = cy - (r - cx);                rotated.push([nr, nc]);            }
-            if(isValidMove(rotated)) { currentPiece = rotated; draw(); }        }
-        function clearLines() {            let newGrid = grid.filter(row => row.includes(0));            let lines = HEIGHT - newGrid.length;            if(lines > 0) {                let emptyLines = [];                for(let i=0; i<lines; i++) {                    let row = []; for(let j=0; j<WIDTH; j++) row.push(0);                    emptyLines.push(row);                }                grid = emptyLines.concat(newGrid);                score += lines * 100;                scoreElement.innerHTML = "Бали: " + score;            }        }
-        startBtn.addEventListener('click', () => {            if(fallTimeout) clearTimeout(fallTimeout);            gameOver = false;            score = 0;            isSoftDropping = false;            scoreElement.innerHTML = "Бали: 0";            initGrid();            newPiece();            draw();            scheduleFall();        });
-        window.addEventListener("keydown", function(e) {            if(.indexOf(e.keyCode) > -1) e.preventDefault();        }, false);
-        document.addEventListener("keydown", (e) => {            if(gameOver || activeSlideIdx !== 4) return;            if(e.keyCode === 37) moveSide(-1);            else if(e.keyCode === 39) moveSide(1);            else if(e.keyCode === 38) rotate();            else if(e.keyCode === 40) {                if(!isSoftDropping) {                    isSoftDropping = true;                    scheduleFall();                }            }        });
-        document.addEventListener("keyup", (e) => {            if(gameOver || activeSlideIdx !== 4) return;            if(e.keyCode === 40) {                isSoftDropping = false;                scheduleFall();            }        });
-        initGrid();        draw();    </script></body></html>
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8">
+    <title>Презентація: Тетріс на Python</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+        background-color: #08090f;
+        color: #e4e7eb;
+        line-height: 1.6;
+        overflow: hidden;
+      }
+        .slider-wrapper {
+          width: 100vw;
+          height: 100vh;
+          position: relative;
+        }
+        .slide {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 4rem;
+          text-align: center;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.4s ease, visibility 0.4s ease;
+          z-index: 1;
+        }
+        .slide.active {
+          opacity: 1;
+          visibility: visible;
+          z-index: 5;
+        }
+        .container { max-width: 1100px; width: 100%; margin: 0 auto; }
+      .badge {
+        background: linear-gradient(135deg, #7000ff, #00ffcc);
+        color: #000;
+        padding: 0.6rem 1.8rem;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        display: inline-block;
+        margin-bottom: 2rem;
+        font-weight: 800; 
+      }
+        h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 2rem; color: #ffffff; line-height: 1.2; }
+      h1 span, h2 span, h3 span { color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.3); }
+      .subtitle { font-size: 1.5rem; color: #8a94a6; margin-bottom: 4rem; }
+      .author-box {
+        background-color: #11131f; border: 1px solid #1e2235; border-left: 5px solid #00ffcc;
+        padding: 2rem; border-radius: 16px; text-align: left; display: inline-block; min-width: 360px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+      .author-box p { color: #8a94a6; margin-bottom: 0.3rem; }
+      .author-name { font-size: 1.7rem; font-weight: 700; color: #fff; }
+      h2 { font-size: 2.8rem; color: #fff; margin-bottom: 2.5rem; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; width: 100%; text-align: left; }
+      .card { background-color: #11131f; padding: 2.5rem; border-radius: 16px; border: 1px solid #1e2235; transition: transform 0.3s; }
+      .card:hover { transform: translateY(-5px); border-color: #7000ff; }
+      .card h3 { color: #00ffcc; margin-bottom: 1.2rem; font-size: 1.4rem; border-bottom: 1px dashed #1e2235; padding-bottom: 0.5rem; }
+      .card p { color: #b0b9c8; font-size: 1.1rem; }
+      pre {
+        background-color: #030407; padding: 2rem; border-radius: 12px; border: 1px solid #141724;
+        font-family: 'Consolas', 'Courier New', monospace; font-size: 1.1rem; color: #a9b2c3; text-align: left;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.8); width: 100%; max-width: 800px; margin: 0 auto;
+      } 
+      .keyword { color: #ff79c6; font-weight: bold; }
+      .def { color: #50fa7b; }
+      .comment { color: #6272a4; font-style: italic; }
+      
+        .nav-controls {
+          position: fixed; bottom: 2rem; right: 2rem; display: flex; gap: 1rem; z-index: 999;
+        }
+      .nav-btn {
+        background-color: #11131f; color: #fff; border: 1px solid #252941; width: 60px; height: 60px;
+        border-radius: 50%; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; 
+        justify-content: center; transition: all 0.2s; user-select: none;
+      } 
+      .nav-btn:hover { background-color: #7000ff; border-color: #7000ff; transform: scale(1.05); }
+      .slide-counter {
+        position: fixed; bottom: 2.5rem; left: 2rem; font-size: 1.1rem; color: #626f8a; font-weight: bold; z-index: 999;
+      }
+        #tetris-stage {
+          display: flex; gap: 3rem; align-items: center; justify-content: center; margin-top: 1rem;
+        }
+      #tetris-canvas {
+        background-color: #050609; border: 4px solid #252941; border-radius: 12px; box-shadow: 0 0 30px rgba(0,255,204,0.15);
+      }
+      .game-panel {
+        background-color: #11131f; padding: 2rem; border-radius: 16px; border: 1px solid #1e2235; text-align: left; min-width: 260px;
+      }
+      .start-btn {
+        background: linear-gradient(135deg, #7000ff, #5900cc); color: white; border: none; padding: 1rem 1.5rem;
+        border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; transition: all 0.2s;
+        box-shadow: 0 5px 15px rgba(112,0,255,0.3); margin-top: 1rem;
+      }
+      .start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(112,0,255,0.5); }
+    </style>
+  </head>
+  <body>
+    <div class="slider-wrapper">
+      <section class="slide active"> 
+        <div class="container">
+          <span class="badge">Проєкт з інформатики</span> 
+          <h1>Розробка інтерактивного ігрового додатка мовою <span>Python</span></h1>
+          <p class="subtitle">Практична реалізація класичної гри «Тетріс» за допомогою графічного інтерфейсу Tkinter</p>
+          <div class="author-box">
+            <p style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Роботу виконала:</p>
+            <p style="color: #fff; font-size: 1.1rem; margin-top: 0.2rem;">Учениця 8-А класу</p>
+            <div class="author-name">Гадомська Еріка</div>
+          </div>
+        </div> 
+      </section>
+        <section class="slide"> 
+          <div class="container">
+            <h2>Мета та концепція проєкту</h2>
+            <div class="grid">
+              <div class="card">
+                <h3>◆ Чому саме Python?</h3>
+                <p>Python поєднує зрозумілий синтаксис із потужними принципами ООП. Це робить його ідеальним інструментом для швидкого створення та тестування ігрових алгоритмів.</p>                    </div>                    <div class="card">                        <h3>◆ Головна мета</h3>                        <p>Дослідити принципи розробки 2D-ігор, запрограмувати поведінку випадкових фігур (тетраміно) та реалізувати систему відстеження ігрових подій у реальному часі.</p>                    </div>                    <div class="card">                        <h3>◆ Стек технологій</h3>                        <p>Інтерпретатор Python 3 та стандартне графічне середовище <strong>Tkinter</strong> (Canvas). Програма автономна і не потребує встановлення сторонніх бібліотек.</p>                    </div>                </div>            </div>        </section>
+        <section class="slide">
+          <div class="container"> 
+            <h2>Матрична модель поля</h2>
+            <div class="grid" style="grid-template-columns: 1.1fr 0.9fr;">
+              <div class="card" style="background: transparent; border: none; padding: 0;">
+                <p style="font-size: 1.3rem; margin-bottom: 1.5rem; text-align: left;">На першому практичному етапі було спроєктовано «склянку» гри. Вся логіка руху базується на двовимірній матриці розміром <strong>20 рядків на 10 стовпчиків</strong>.</p>                        <p style="font-size: 1.3rem; text-align: left;">Значення <span>0</span> означає, що клітинка абсолютно порожня. Якщо фігура падає на дно, клітинка записує в себе її колір.</p>                    </div>                    <div class="card">                        <h3>Ключові ігрові алгоритми:</h3>                        <p style="margin-bottom: 0.6rem; font-size: 1.05rem;"> <strong>Collision Detection:</strong> Перевірка зіткнень зі стінами та фігурами.</p>                        <p style="margin-bottom: 0.6rem; font-size: 1.05rem;"> <strong>Line Clearing:</strong> Автоматичне видалення заповнених ліній.</p>                        <p style="font-size: 1.05rem;"> <strong>Ігровий цикл:</strong> Автоматичне падіння фігур кожні 500 мс.</p>                    </div>                </div>            </div>        </section>
+        <section class="slide">
+          <div class="container"> 
+            <h2>Архітектура головного класу</h2>
+            <pre><span class="keyword">class</span> <span class="def">Tetris</span>:
+              <span class="keyword">def</span> <span class="def">__init__</span>(self, root):
+              self.root = root
+              <span class="comment"># Створення графічного вікна програми через Tkinter</span>
+              self.canvas = tk.Canvas(root, width=300, height=600, bg="#050609")
+              self.canvas.pack()
+              <span class="comment"># Створення ігрової сітки (матриці) 20х10</span>
+              self.grid = [ * 10 for _ in range(20)]
+              self.score = 0 
+              self.new_piece()
+              <span class="comment"># Поява першого тетраміно</span>
+              self.move_down()
+              <span class="comment"># Запуск падіння фігур за таймером</span></pre> 
+          </div>
+        </section>
+        <section class="slide">
+          <div class="container">
+            <h2> Інтерактивна демонстрація проєкту</h2>
+            <div id="tetris-stage">
+              <canvas id="tetris-canvas" width="300" height="600"></canvas>
+              <div class="game-panel">
+                <h3 style="color: #fff; margin-bottom: 0.5rem; font-size: 1.2rem;">Рахунок:</h3>
+                <div id="game-score" style="font-size: 2.5rem; font-weight: bold; color: #00ffcc; margin-bottom: 1.5rem;">Бали: 0</div>                                                <h4 style="color: #8a94a6; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 0.8rem; letter-spacing: 1px;">Керування:</h4>                        <p style="font-size: 1rem; margin-bottom: 0.4rem;"> — Поворот фігури</p>                        <p style="font-size: 1rem; margin-bottom: 0.4rem;"> — Ліворуч / Праворуч</p>                        <p style="font-size: 1rem; margin-bottom: 1.5rem;"> — Затиснути для прискорення</p>                        <button id="start-btn" class="start-btn">Запустити гру</button>                    </div>                </div>            </div>        </section>    </div>
+    <div class="slide-counter"><span id="current-slide-num">1</span> / 5</div>
+    <div class="nav-controls"> 
+      <button class="nav-btn" id="prev-btn">←</button>
+      <button class="nav-btn" id="next-btn">→</button>
+    </div>
+    <script>
+      const slides = document.querySelectorAll('.slide');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const currentSlideNum = document.getElementById('current-slide-num');
+      let activeSlideIdx = 0;
+        function updateSlides() {
+          slides.forEach((slide, idx) => {
+            if(idx === activeSlideIdx) slide.classList.add('active');
+            else slide.classList.remove('active');
+          });
+          currentSlideNum.textContent = activeSlideIdx + 1;
+        }
+        nextBtn.addEventListener('click', () => {
+          if(activeSlideIdx < slides.length - 1) { activeSlideIdx++; updateSlides(); }
+        });        prevBtn.addEventListener('click', () => {
+          if(activeSlideIdx > 0) { activeSlideIdx--; updateSlides(); }
+        });
+        document.addEventListener('keydown', (e) => {
+          if(activeSlideIdx === 4 && !gameOver) return;
+            if(e.keyCode === 32 || e.keyCode === 39) {
+              e.preventDefault();
+              if(activeSlideIdx < slides.length - 1) { activeSlideIdx++; updateSlides(); }
+            } else if(e.keyCode === 8 || e.keyCode === 37) {
+              e.preventDefault();
+              if(activeSlideIdx > 0) { activeSlideIdx--; updateSlides(); }
+            }
+        });
+        const canvas = document.getElementById('tetris-canvas');
+      const ctx = canvas.getContext('2d');
+      const scoreElement = document.getElementById('game-score');
+      const startBtn = document.getElementById('start-btn');
+        const WIDTH = 10, HEIGHT = 20, CELL_SIZE = 30;
+      const NORMAL_DELAY = 500, SOFT_DROP_DELAY = 45;
+      const VACANT = "#050609";
+        const PIECES = {
+          "I": { shape: [[0, -1],,,], color: "#00ffcc" },
+          "O": { shape: [,,,], color: "#ffff00" },
+          "T": { shape: [[0, -1],,,], color: "#ff00ff" },
+          "S": { shape: [[0, -1],,,], color: "#00ff00" },
+          "Z": { shape: [,, [1, -1],], color: "#ff0000" },
+          "J": { shape: [[0, -1],, [1, -1],], color: "#0000ff" },
+          "L": { shape: [,, [1, -1],], color: "#ffa500" }
+        };
+        let grid = [];
+      let score = 0;
+      let currentPiece = null;
+      let currentColor = null;
+      let gameOver = true;
+      let isSoftDropping = false;
+      let fallTimeout = null;
+        function initGrid() {
+          grid = []; 
+          for(let r=0; r<HEIGHT; r++) { 
+            grid[r] = [];
+            for(let c=0; c<WIDTH; c++) grid[r][c] = 0;
+          }
+        }
+        function drawCell(r, c, color) {
+          ctx.fillStyle = color;
+          ctx.fillRect(c*CELL_SIZE, r*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+          ctx.strokeStyle = "#1a1a1a";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(c*CELL_SIZE, r*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+        function draw() {
+          ctx.fillStyle = VACANT;
+          ctx.fillRect(0, 0, WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE);
+            for(let r=0; r<HEIGHT; r++) {
+              for(let c=0; c<WIDTH; c++) {
+                if(grid[r][c]) drawCell(r, c, grid[r][c]);
+              }
+            }
+            if(currentPiece) {
+              currentPiece.forEach(coord => {
+                let r = coord, c = coord;
+                if(r >= 0) drawCell(r, c, currentColor);
+              });
+            }
+            if(gameOver && currentPiece === null && score === 0) {
+              // Очікування
+            } else if(gameOver) {
+              ctx.fillStyle = "#161925"; 
+              ctx.strokeStyle = "#ff0066";
+              ctx.lineWidth = 2;
+              ctx.fillRect(0, 220, WIDTH*CELL_SIZE, 160); 
+              ctx.strokeRect(0, 220, WIDTH*CELL_SIZE, 160);
+                ctx.fillStyle = "red";
+              ctx.font = "bold 28px Segoe UI";
+              ctx.textAlign = "center"; 
+              ctx.fillText("КІНЕЦЬ ГРИ", (WIDTH*CELL_SIZE)/2, 310);
+            } 
+        }
+        function scheduleFall() {
+          if(fallTimeout) clearTimeout(fallTimeout);
+          if(!gameOver && currentPiece) {
+            let delay = isSoftDropping ? SOFT_DROP_DELAY : NORMAL_DELAY;
+            fallTimeout = setTimeout(moveDown, delay);
+          } 
+        }
+        function newPiece() {
+          if(gameOver) return;
+          let keys = Object.keys(PIECES); 
+          let shapeName = keys[Math.floor(Math.random() * keys.length)];
+          let data = PIECES[shapeName];
+            currentPiece = data.shape.map(coord => [coord, coord]);
+          currentColor = data.color;
+            let startCol = Math.floor(WIDTH / 2);
+          currentPiece.forEach(p => p += startCol);
+            if(!isValidMove(currentPiece)) { 
+              gameOver = true;
+              currentPiece = null;
+              draw();
+            }   
+        }
+        function isValidMove(piece) {
+          for(let i=0; i<piece.length; i++) { 
+            let r = piece[i], c = piece[i];
+            if(c < 0 || c >= WIDTH || r >= HEIGHT) return false;
+            if(r >= 0 && grid[r][c] !== 0) return false;
+          }
+          return true;
+        }
+        function lockPiece() {
+          currentPiece.forEach(coord => { 
+            let r = coord, c = coord;
+            if(r >= 0 && r < HEIGHT) grid[r][c] = currentColor;
+          });
+          currentPiece = null;
+        }
+        function moveDown() { 
+          if(gameOver || !currentPiece) return;  
+          let movedPiece = currentPiece.map(coord => [coord + 1, coord]);
+            if(isValidMove(movedPiece)) { 
+              currentPiece = movedPiece; 
+            } else { 
+              lockPiece();
+              clearLines();
+              newPiece(); 
+              isSoftDropping = false;
+            }
+          draw();
+          scheduleFall(); 
+        }
+        function moveSide(dc) {
+          if(gameOver || !currentPiece) return; 
+          let moved = currentPiece.map(coord => [coord, coord + dc]);
+          if(isValidMove(moved)) { currentPiece = moved; draw(); }
+        }
+        function rotate() {
+          if(gameOver || !currentPiece || currentColor === "#ffff00") return;
+            let cx = currentPiece;
+          let cy = currentPiece;
+          let rotated = [];
+            for(let i=0; i<currentPiece.length; i++) { 
+              let r = currentPiece[i];
+              let c = currentPiece[i];
+              let nr = cx + (c - cy);  
+              let nc = cy - (r - cx); 
+              rotated.push([nr, nc]); 
+            }
+            if(isValidMove(rotated)) { currentPiece = rotated; draw(); } 
+        }
+        function clearLines() {
+          let newGrid = grid.filter(row => row.includes(0));
+          let lines = HEIGHT - newGrid.length;
+          if(lines > 0) {
+            let emptyLines = [];
+            for(let i=0; i<lines; i++) { 
+              let row = []; for(let j=0; j<WIDTH; j++) row.push(0); 
+              emptyLines.push(row);
+            }   
+            grid = emptyLines.concat(newGrid);
+            score += lines * 100;
+            scoreElement.innerHTML = "Бали: " + score;
+          }
+        }
+        startBtn.addEventListener('click', () => { 
+          if(fallTimeout) clearTimeout(fallTimeout);
+          gameOver = false;
+          score = 0;
+          isSoftDropping = false;
+          scoreElement.innerHTML = "Бали: 0";
+          initGrid(); 
+          newPiece(); 
+          draw();  
+          scheduleFall(); 
+        });
+        window.addEventListener("keydown", function(e) {
+          if(.indexOf(e.keyCode) > -1) e.preventDefault(); 
+        }, false);
+        document.addEventListener("keydown", (e) => {
+          if(gameOver || activeSlideIdx !== 4) return; 
+          if(e.keyCode === 37) moveSide(-1); 
+          else if(e.keyCode === 39) moveSide(1); 
+          else if(e.keyCode === 38) rotate();
+          else if(e.keyCode === 40) {
+            if(!isSoftDropping) { 
+              isSoftDropping = true;
+              scheduleFall();
+            }
+          }
+        });
+        document.addEventListener("keyup", (e) => { 
+          if(gameOver || activeSlideIdx !== 4) return;
+          if(e.keyCode === 40) { 
+            isSoftDropping = false;
+            scheduleFall();
+          } 
+        });
+        initGrid();
+      draw();
+    </script>
+  </body>
+</html>
