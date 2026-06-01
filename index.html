@@ -67,7 +67,7 @@
       .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; width: 100%; text-align: left; }
       .card { background-color: #11131f; padding: 2.5rem; border-radius: 16px; border: 1px solid #1e2235; transition: transform 0.3s; }
       .card:hover { transform: translateY(-5px); border-color: #7000ff; }
-      .card h3 { color: #00ffcc; margin-bottom: 1.2rem; font-size: 1.4rem; }
+      .card h3 { color: #00ffcc; margin-bottom: 1.2rem; font-size: 1.4rem; border-bottom:1px dashed #1e2235; padding-bottom: 0.5rem }
       .card p { color: #b0b9c8; font-size: 1.1rem; }
       pre {
         background-color: #030407; padding: 2rem; border-radius: 12px; border: 1px solid #141724;
@@ -79,7 +79,7 @@
       .comment { color: #6272a4; font-style: italic; }
         /* Кнопки навігації слайдера */
       .nav-controls {
-        position: fixed; bottom: 2rem; right: 2rem; display: flex; gap: 1rem; z-index: 9999;
+        position: fixed; bottom: 2rem; right: 2rem; display: flex; gap: 1rem; z-index: 999;
       }
       .nav-btn {
         background-color: #11131f; color: #fff; border: 1px solid #252941; width: 60px; height: 60px;
@@ -87,9 +87,7 @@
         justify-content: center; transition: all 0.2s; user-select: none;
       } 
       .nav-btn:hover { background-color: #7000ff; border-color: #7000ff; transform: scale(1.05); }
-      .slide-counter {
-        position: fixed; bottom: 2.5rem; left: 2rem; font-size: 1.1rem; color: #626f8a; font-weight: bold;
-      }
+      .slide-counter {position: fixed; bottom: 2.5rem; left: 2rem; font-size: 1.1rem; color: #626f8a; font-weight: bold; z-index:999;}
         /*  ігровий блок Тетрісу */
       #tetris-stage {
         display: flex; gap: 3rem; align-items: center; justify-content: center; margin-top: 1rem;
