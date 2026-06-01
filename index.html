@@ -230,11 +230,11 @@
         // Керування презентацією за допомогою клавіатури
       document.addEventListener('keydown', (e) => {
         // Якщо гра активна і ми на 5 слайді, клавіші стрілочок потрібні грі, а не слайдеру
-        if(activeSlideIdx === 4 && !gameOver &&.includes(e.keyCode)) return;
-            if(e.keyCode === 32) { // Пробіл — вперед
+        if(activeSlideIdx === 4 && !gameOver) return;
+            if(e.keyCode === 32 || e.keyCode === 39){ // Пробіл або стрілка вправо — вперед
               e.preventDefault();
               if(activeSlideIdx < slides.length - 1) { activeSlideIdx++; updateSlides(); }
-            } else if(e.keyCode === 8) { // Backspace — назад
+            } else if(e.keyCode === 8 || e.keyCode === 37) { // Backspace — назад або стрілка вліво - назад
               e.preventDefault();
               if(activeSlideIdx > 0) { activeSlideIdx--; updateSlides(); }
             }
